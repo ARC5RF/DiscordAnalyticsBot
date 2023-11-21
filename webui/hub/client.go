@@ -2,6 +2,7 @@ package hub
 
 import (
 	"bytes"
+	"encoding/json"
 	"log"
 	"time"
 
@@ -43,6 +44,12 @@ type Client struct {
 	send chan []byte
 }
 
+type ClientCommand struct {
+	Operation int             `json:"op"`
+	Type      string          `json:"t"`
+	RawData   json.RawMessage `json:"d"`
+}
+
 // readPump pumps messages from the websocket connection to the hub.
 //
 // The application runs readPump in a per-connection goroutine. The application
@@ -64,6 +71,15 @@ func (c *Client) readPump() {
 			}
 			break
 		}
+
+		raw := &ClientCommand{}
+		if err := json.Unmarshal(message, raw); err == nil {
+			for _, r := range c.hub.receivers {
+				r(raw)
+			}
+			continue
+		}
+
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 		c.hub.broadcast <- message
 	}

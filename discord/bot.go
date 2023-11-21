@@ -1,6 +1,6 @@
-package bot
+package discord
 
-import "github.com/ARC5RF/DiscordAnalyticsBot/bot/session"
+import "github.com/ARC5RF/DiscordAnalyticsBot/discord/session"
 
 var New = session.New
 

@@ -1,7 +1,7 @@
 package perms
 
 import (
-	"github.com/ARC5RF/DiscordAnalyticsBot/bot/lookup"
+	"github.com/ARC5RF/DiscordAnalyticsBot/discord/lookup"
 	"github.com/bwmarrin/discordgo"
 )
 

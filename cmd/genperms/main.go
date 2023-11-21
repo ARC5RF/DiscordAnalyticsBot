@@ -13,14 +13,14 @@ import (
 var data string
 
 func main() {
-	type Ticker struct {
+	type PermInfo struct {
 		Permission  string `header:"Permission"`
 		Value       string `header:"Value"`
 		Description string `header:"Description"`
 		CType       string `header:"Channel Type"`
 	}
 
-	out, err := htmltable.NewSliceFromString[Ticker](data)
+	out, err := htmltable.NewSliceFromString[PermInfo](data)
 	if err != nil {
 		panic(err)
 	}

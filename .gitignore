@@ -23,3 +23,6 @@ go.work
 # Sensitive data
 .env
 .cache
+cmd/twcss/tailwind
+assets/public/tw.css
+assets/templates/examples

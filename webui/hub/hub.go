@@ -11,6 +11,8 @@ type Hub struct {
 	// Registered clients.
 	clients map[*Client]bool
 
+	receivers []func(*ClientCommand)
+
 	// Inbound messages from the clients.
 	broadcast chan []byte
 
@@ -53,6 +55,10 @@ func (h *Hub) Run() {
 			}
 		}
 	}
+}
+
+func (h *Hub) Receive(c func(*ClientCommand)) {
+	h.receivers = append(h.receivers, c)
 }
 
 func (h *Hub) Broadcast(message []byte) {

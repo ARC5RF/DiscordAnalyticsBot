@@ -9,8 +9,9 @@ import (
 
 	"net/http"
 
-	"github.com/ARC5RF/DiscordAnalyticsBot/bot"
+	"github.com/ARC5RF/DiscordAnalyticsBot/discord"
 	"github.com/ARC5RF/DiscordAnalyticsBot/webui"
+	"github.com/ARC5RF/DiscordAnalyticsBot/webui/hub"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -31,29 +32,32 @@ func Info(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	discord_session := bot.New()
+
+	wui := webui.New()
+
+	discord_session := discord.New()
 	if err := discord_session.Open(); err != nil {
 		panic(err)
 	}
 	discord_session.GoInvisible()
 
-	// refresh_cache(discord_session)
-
-	wui := webui.New()
-
 	discord_session.AddHandler(func(s *discordgo.Session, data interface{}) {
 		v := reflect.ValueOf(data)
 
-		switch v := data.(type) {
+		switch e := data.(type) {
 		case *discordgo.Event:
-			data, err := json.Marshal(&v)
+			data, err := json.Marshal(&e)
 			if err != nil {
 				return
 			}
 			wui.Broadcast(data)
+		default:
+			fmt.Println(v.Type())
 		}
+	})
 
-		fmt.Println(v.Type())
+	wui.Receive(func(m *hub.ClientCommand) {
+		fmt.Println("recieved command from web UI", m.Type)
 	})
 
 	interrupt := make(chan os.Signal, 1)
